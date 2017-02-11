@@ -55,7 +55,6 @@ public class RulesOf6005 {
             }
         }
         return true;
-        
     }
     
     /**
