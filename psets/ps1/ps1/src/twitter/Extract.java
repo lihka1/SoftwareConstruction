@@ -3,6 +3,8 @@
  */
 package twitter;
 
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +26,22 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        if (tweets.size() == 0){
+            return new Timespan(Instant.now(), Instant.now());
+        }
+        Instant start = tweets.get(0).getTimestamp();
+        Instant end = tweets.get(0).getTimestamp();
+        
+        for (int i = 0; i < tweets.size(); i++) {
+            if (tweets.get(i).getTimestamp().isBefore(start)){
+                start = tweets.get(i).getTimestamp();
+            }
+            else if (tweets.get(i).getTimestamp().isAfter(end)){
+                end = tweets.get(i).getTimestamp();
+            }
+        }
+        return new Timespan(start, end);
+        //throw new RuntimeException("not implemented");
     }
 
     /**
@@ -43,7 +60,41 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        if (tweets.isEmpty()){
+            return new HashSet<String>();
+        }
+        Set<String> mentionedUsers = new HashSet<>();
+        for (Tweet tweet: tweets){
+            String[] text = tweet.getText().split(" ");
+            for (String word: text){
+                if (word.length() > 0 && word.charAt(0) == '@'){
+                    if (valid(word)){
+                        mentionedUsers.add(word.substring(1).toLowerCase());
+                    }
+                }
+            }
+        }
+        return mentionedUsers;
+        //throw new RuntimeException("not implemented");
     }
-
+    
+    /**
+     * Determint whether the word is valid according to tweet author.
+     * 
+     * @param word word to be checked whether it is valid or not
+     * @return whether the word is a valid username according to tweets author
+     */
+    private static boolean valid(String word){
+        if (word.length() < 2){
+            return false;
+        }
+        for (int i = 1; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if (Character.isDigit(c) || Character.isAlphabetic(c) || 
+                    c == '_' || c == '-'){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -23,7 +23,6 @@ public class Main {
      * it has to refresh its cached sample of tweets.
      */
     public static final URL SAMPLE_SERVER = makeURLAssertWellFormatted("http://courses.csail.mit.edu/6.005/ps1_tweets/tweetPoll.py");
-    
     private static URL makeURLAssertWellFormatted(String urlString) {
         try {
             return new URL(urlString);
