@@ -3,7 +3,10 @@
  */
 package twitter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.text.AbstractDocument.Content;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -27,7 +30,17 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        if (tweets.isEmpty()){
+            return new ArrayList<Tweet>();
+        }
+        List<Tweet> usernameListOfTweets = new ArrayList<>();
+        for (Tweet tweet: tweets){
+            if (tweet.getAuthor().equals(username)){
+                usernameListOfTweets.add(tweet);
+            }
+        }
+        return usernameListOfTweets;
+        //throw new RuntimeException("not implemented");
     }
 
     /**
@@ -41,7 +54,16 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> tweetsInsideTimespan = new ArrayList<>();
+        
+        for (Tweet tweet: tweets){
+            if (tweet.getTimestamp().isAfter(timespan.getStart()) && 
+                tweet.getTimestamp().isBefore(timespan.getEnd())){
+                tweetsInsideTimespan.add(tweet);
+            }
+        }
+        return tweetsInsideTimespan;
+        //throw new RuntimeException("not implemented");
     }
 
     /**
@@ -60,7 +82,29 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> wordContainingTweets = new ArrayList<>();
+        
+        for(Tweet tweet: tweets){
+            String[] contentText = tweet.getText().split(" ");
+            if (wordsInTweets(contentText, words)){
+                wordContainingTweets.add(tweet);
+            }
+        }
+        return wordContainingTweets;
+        
+       // throw new RuntimeException("not implemented");
     }
+    private static boolean wordsInTweets(String[] contentText, List<String> words){
+        for (String word: words){
+            for (String text: contentText){
+                if (word.equalsIgnoreCase(text)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
 
 }
